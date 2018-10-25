@@ -90,7 +90,7 @@ var globeObj = (function() {
         camera.up.z = 0;
         camera.position.x = 0;
         camera.position.y = 100;
-        camera.position.z = 1000;
+        camera.position.z = 3333;
         camera.lookAt(0,0,0);
 
         groupSun = new THREE.Group();
