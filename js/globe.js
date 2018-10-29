@@ -7,10 +7,12 @@ var globeObj = (function() {
     if(!Detector.webgl) Detector.addGetWebGLMessage();
 
     var container;
-    var camera, scene, renderer;
+    var camera, scene, renderer,controls;
     var groupEarth,groupMoon,groupPoint, groupSun;
     var globeMesh,moonMesh;
     var winWth = window.innerWidth, winHgt = window.innerHeight;
+
+    controls = new THREE.OrbitControls(camera, render.domElement);
 
     // 太阳
     function sun() {
@@ -124,6 +126,7 @@ var globeObj = (function() {
 
         // resize事件
         window.addEventListener('resize', onWindowResize, false);
+
     }
 
     // 窗口大小改变
@@ -137,12 +140,12 @@ var globeObj = (function() {
 
     // 渲染
     function render() {
-        globeMesh.rotation.y += 0.01
-        groupEarth.rotation.y -= 0.008;
+        groupEarth.rotation.y -= 0.01;
+        globeMesh.rotation.y -= 0.01
         
         moonMesh.position.x = 600 + 200*(Math.cos(speed));
         moonMesh.position.z = 600 + 200*(Math.sin(speed));
-        speed += 0.04;
+        speed -= 0.04;
         renderer.render(scene, camera);
     }
 
