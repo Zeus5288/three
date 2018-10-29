@@ -140,7 +140,6 @@ var globeObj = (function() {
     function render() {
         globeMesh.rotation.y += 0.01
         groupEarth.rotation.y -= 0.008;
-
         
         moonMesh.position.x = 600 + 200*(Math.cos(speed));
         moonMesh.position.z = 600 + 200*(Math.sin(speed));
