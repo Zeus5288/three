@@ -14,7 +14,6 @@ var globeObj = (function() {
 
     // 太阳
     function sun() {
- 
         var sunGgeometry = new THREE.SphereGeometry(230, 100, 100);
         var sunMaterial = new THREE.MeshLambertMaterial({
             color: 0xffff00,
