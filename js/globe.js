@@ -26,7 +26,7 @@ var globeObj = (function() {
          //是否自动旋转 
          controls.autoRotate = true; 
          //设置相机距离原点的最远距离 
-         controls.minDistance = 2000; 
+         controls.minDistance = 1000; 
          //设置相机距离原点的最远距离 
          controls.maxDistance = 2000; 
          //是否开启右键拖拽 
