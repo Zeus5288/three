@@ -9,6 +9,7 @@ var globeObj = (function() {
     var container;
     var camera, scene, renderer;
     var groupEarth,groupMoon,groupPoint, groupSun;
+    var globeMesh,moonMesh;
     var winWth = window.innerWidth, winHgt = window.innerHeight;
 
     // 太阳
@@ -21,7 +22,6 @@ var globeObj = (function() {
         });
         var sunMesh = new THREE.Mesh(sunGgeometry, sunMaterial);
         groupSun.add(sunMesh);
-
     }
 
     // 地球
@@ -30,9 +30,9 @@ var globeObj = (function() {
         globeTextureLoader.load('images/textures/earth.jpg', function (texture) {
             var globeGgeometry = new THREE.SphereGeometry(90, 100, 100);
             var globeMaterial = new THREE.MeshStandardMaterial({map: texture});
-            var globeMesh = new THREE.Mesh(globeGgeometry, globeMaterial);
-            globeMesh.position.x = 400;
-            globeMesh.position.z = 400;
+            globeMesh = new THREE.Mesh(globeGgeometry, globeMaterial);
+            globeMesh.position.x = 600;
+            globeMesh.position.z = 600;
             groupEarth.add(globeMesh);
         });
     }
@@ -41,13 +41,12 @@ var globeObj = (function() {
     function moon() {
         var moonTextureLoader = new THREE.TextureLoader();
         moonTextureLoader.load('images/textures/moon.jpg', function (texture) {
-            var moonGgeometry = new THREE.SphereGeometry(50, 100, 100);
+            var moonGgeometry = new THREE.SphereGeometry(40, 100, 100);
             var moonMaterial = new THREE.MeshStandardMaterial({map: texture});
-            var moonMesh = new THREE.Mesh(moonGgeometry, moonMaterial);
-            moonMesh.position.x = 400;
-            moonMesh.position.z = 400;
-            groupMoon.add(moonMesh);
-
+            moonMesh = new THREE.Mesh(moonGgeometry, moonMaterial);
+            moonMesh.position.x = 600;
+            moonMesh.position.z = 600;
+            groupEarth.add(moonMesh);
         });
     }
 
@@ -89,8 +88,8 @@ var globeObj = (function() {
         camera.up.y = 1;
         camera.up.z = 0;
         camera.position.x = 0;
-        camera.position.y = 100;
-        camera.position.z = 3333;
+        camera.position.y = 400;
+        camera.position.z = 2000;
         camera.lookAt(0,0,0);
 
         groupSun = new THREE.Group();
@@ -113,7 +112,7 @@ var globeObj = (function() {
         moon();
 
         // // 星点
-        stars();
+        // stars();
     
         // 半球光
         lights();
@@ -134,11 +133,18 @@ var globeObj = (function() {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     }
-    
+
+    var speed = 0;
+
     // 渲染
     function render() {
-        groupEarth.rotation.y -= 0.01;
-        groupMoon.rotation.y -= 0.05;
+        globeMesh.rotation.y += 0.01
+        groupEarth.rotation.y -= 0.008;
+
+        
+        moonMesh.position.x = 600 + 200*(Math.cos(speed));
+        moonMesh.position.z = 600 + 200*(Math.sin(speed));
+        speed += 0.04;
         renderer.render(scene, camera);
     }
 
