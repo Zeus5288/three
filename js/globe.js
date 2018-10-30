@@ -7,7 +7,7 @@ var globeObj = (function() {
     if(!Detector.webgl) Detector.addGetWebGLMessage();
 
     var container;
-    var camera, scene, renderer,controls;
+    var camera, scene, renderer,controls,light;
     var groupEarth,groupMoon,groupPoint, groupSun;
     var globeMesh,moonMesh;
     var winWth = window.innerWidth, winHgt = window.innerHeight;
@@ -92,6 +92,31 @@ var globeObj = (function() {
         hemisphereLight.position.y = 0;
         hemisphereLight.position.z = 0;
         scene.add(hemisphereLight);
+
+        var spotLight = new THREE.SpotLight(0xffffff);
+        spotLight.position.set(0,0,0);
+        scene.add(spotLight);
+
+        light = new THREE.PointLight(0xffffff, 5, 10000);
+
+        let loader = new THREE.TextureLoader();
+        // 添加镜头炫光
+        let textFlare0 = loader.load("images/textures/sun.png");
+        let textFlare3 = loader.load("images/textures/sun2.png");
+
+        let lensFlare = new THREE.Lensflare();
+
+        lensFlare.addElement(new THREE.LensflareElement(textFlare0, 500, 0, light.color));
+        lensFlare.addElement(new THREE.LensflareElement(textFlare3, 60, 0.6, light.color));
+        lensFlare.addElement(new THREE.LensflareElement(textFlare3, 100, 0.7, light.color));
+        lensFlare.addElement(new THREE.LensflareElement(textFlare3, 60, 0.9, light.color));
+        lensFlare.addElement(new THREE.LensflareElement(textFlare3, 70, 1, light.color));
+
+        light.add(lensFlare);
+        light.position.set(0, 0, 0);
+
+        scene.add(light);
+
     }
 
     // 初始化
@@ -132,12 +157,16 @@ var globeObj = (function() {
 
         // // 星点
         // stars();
-    
+
         // 半球光
         lights();
 
         // 渲染器
-        renderer = new THREE.WebGLRenderer({antialias: true, preserveDrawingBuffer: true});
+        renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true, 
+            preserveDrawingBuffer: true
+        });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(winWth, winHgt);
         container.appendChild(renderer.domElement);
@@ -158,11 +187,12 @@ var globeObj = (function() {
 
     // 渲染
     function render() {
-        groupEarth.rotation.y -= 0.01;
-        globeMesh.rotation.y -= 0.01
+        groupEarth.rotation.y -= 0.004;
+        globeMesh.rotation.y += 0.01
         
         moonMesh.position.x = 600 + 200*(Math.cos(speed));
         moonMesh.position.z = 600 + 200*(Math.sin(speed));
+        moonMesh.rotation.y += 0.05;
         speed -= 0.04;
         renderer.render(scene, camera);
     }
