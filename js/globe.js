@@ -162,7 +162,7 @@ var globeObj = (function() {
         scene.add(groupPoint);
 
         //太阳
-        sun();
+        // sun();
 
         //木星
         mu();
