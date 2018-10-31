@@ -119,6 +119,7 @@
         renderer = new THREE.WebGLRenderer( { antialias: true } );
         renderer.setPixelRatio( window.devicePixelRatio );
         container.appendChild( renderer.domElement );
+        renderer.autoClear = false;
  
         let renderModel = new THREE.RenderPass( scene, camera );//渲染场景的通道，不会将结果输出到屏幕
         let effectBloom = new THREE.BloomPass( 1.25 );//增加场景的渲染亮度

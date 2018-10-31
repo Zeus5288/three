@@ -93,11 +93,11 @@ let globeObj = (function() {
 
     // 光
     function lights() {
-        // let hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x333333, 2);
-        // hemisphereLight.position.x = 0;
-        // hemisphereLight.position.y = 0;
-        // hemisphereLight.position.z = 0;
-        // scene.add(hemisphereLight);
+        let hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x333333, 2);
+        hemisphereLight.position.x = 0;
+        hemisphereLight.position.y = 0;
+        hemisphereLight.position.z = 0;
+        scene.add(hemisphereLight);
 
         light = new THREE.PointLight(0xffffff, 3, 10000);
         light.position.set(0, 0, 0);
