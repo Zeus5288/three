@@ -36,9 +36,9 @@ let globeObj = (function() {
          //是否自动旋转 
          controls.autoRotate = true; 
          //设置相机距离原点的最远距离 
-         controls.minDistance = 5; 
+         controls.minDistance = 500; 
          //设置相机距离原点的最远距离 
-         controls.maxDistance = 2000; 
+         controls.maxDistance = 3000; 
          //是否开启右键拖拽 
          controls.enablePan = true; 
      }
@@ -95,13 +95,13 @@ let globeObj = (function() {
 
     // 光
     function lights() {
-        // let hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x333333, 2);
-        // hemisphereLight.position.x = 0;
-        // hemisphereLight.position.y = 0;
-        // hemisphereLight.position.z = 0;
-        // scene.add(hemisphereLight);
+        let hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x333333, 1);
+        hemisphereLight.position.x = 0;
+        hemisphereLight.position.y = 0;
+        hemisphereLight.position.z = 0;
+        scene.add(hemisphereLight);
 
-        light = new THREE.PointLight(0xffffff, 3, 10000);
+        light = new THREE.PointLight(0xffffff, 1, 10000);
         light.position.set(0, 0, 0);
         scene.add(light);
     }
@@ -113,7 +113,7 @@ let globeObj = (function() {
         camera.up.z = 0;
         camera.position.x = 0;
         camera.position.y = 100;
-        camera.position.z = 2000;
+        camera.position.z = 2500;
         camera.lookAt(0,0,0);
     }
 
@@ -235,10 +235,10 @@ let globeObj = (function() {
         let delta = 5 * clock.getDelta();
         uniforms.time.value += 0.2 * delta;
         
-        groupEarth.rotation.y -= 0.004;
+        groupEarth.rotation.y -= 0.005;
         globeMesh.rotation.y += 0.01;
 
-        mesh.rotation.y += 0.01;
+        mesh.rotation.y += 0.002;
        
         groupMu.rotation.y -= 0.01;
         muMesh.rotation.y += 0.04;
@@ -246,7 +246,7 @@ let globeObj = (function() {
         moonMesh.position.x = 800 + 200*(Math.cos(speed));
         moonMesh.position.z = 800 + 200*(Math.sin(speed));
         moonMesh.rotation.y += 0.05;
-        speed -= 0.04;
+        speed += 0.05;
         renderer.clear();
         composer.render( 0.005 );
     }
