@@ -8,11 +8,12 @@ let globeObj = (function() {
 
     let container;
 
-    let camera, scene, renderer,controls,light,composer;
+    let camera, scene, renderer, controls, light, composer, clock, gui;
     let uniforms;
 
-    let groupEarth,groupMoon,groupPoint, groupSun,groupMu;
-    let globeMesh,moonMesh,muMesh,mesh;
+    let groupEarth, groupMoon, groupPoint, groupSun, groupMu;
+    let globeMesh, moonMesh, muMesh, mesh;
+
     let winWth = window.innerWidth, winHgt = window.innerHeight;
 
     let speed = 0;
@@ -41,6 +42,7 @@ let globeObj = (function() {
          //是否开启右键拖拽 
          controls.enablePan = true; 
      }
+
     // 太阳
     function sun() {
         let sunGgeometry = new THREE.SphereGeometry(230, 100, 100);
@@ -93,25 +95,18 @@ let globeObj = (function() {
 
     // 光
     function lights() {
-        let hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x333333, 2);
-        hemisphereLight.position.x = 0;
-        hemisphereLight.position.y = 0;
-        hemisphereLight.position.z = 0;
-        scene.add(hemisphereLight);
+        // let hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x333333, 2);
+        // hemisphereLight.position.x = 0;
+        // hemisphereLight.position.y = 0;
+        // hemisphereLight.position.z = 0;
+        // scene.add(hemisphereLight);
 
         light = new THREE.PointLight(0xffffff, 3, 10000);
         light.position.set(0, 0, 0);
         scene.add(light);
     }
 
-    // 初始化
-    function init() {
-        container = document.getElementById('zh_globe_container');
-
-        scene = new THREE.Scene();
-        let bgTexture = new THREE.TextureLoader().load("images/textures/star.jpg");
-        scene.background = bgTexture;
-
+    function cameras() {
         camera = new THREE.PerspectiveCamera(50, winWth/winHgt, 1, 4000);
         camera.up.x = 0;
         camera.up.y = 1;
@@ -120,6 +115,31 @@ let globeObj = (function() {
         camera.position.y = 100;
         camera.position.z = 2000;
         camera.lookAt(0,0,0);
+    }
+
+    // 初始化
+    function init() {
+        container = document.getElementById('zh_globe_container');
+
+        scene = new THREE.Scene();
+        clock = new THREE.Clock();
+
+        let bgTexture = new THREE.TextureLoader().load("images/textures/star.jpg");
+        scene.background = bgTexture;
+
+        cameras();        
+
+        // groupSun = new THREE.Group();
+        groupEarth = new THREE.Group();
+        groupMu = new THREE.Group();
+        groupMoon = new THREE.Group();
+        groupPoint = new THREE.Group();
+        
+        // scene.add(groupSun);
+        scene.add(groupMu);
+        scene.add(groupEarth);
+        scene.add(groupMoon);
+        scene.add(groupPoint);
 
         let textureLoader = new THREE.TextureLoader();
         //定义着色器与外部联系的变量
@@ -144,21 +164,6 @@ let globeObj = (function() {
  
         scene.add( mesh );
 
-        groupSun = new THREE.Group();
-        groupEarth = new THREE.Group();
-        groupMu = new THREE.Group();
-        groupMoon = new THREE.Group();
-        groupPoint = new THREE.Group();
-        
-        scene.add(groupSun);
-        scene.add(groupMu);
-        scene.add(groupEarth);
-        scene.add(groupMoon);
-        scene.add(groupPoint);
-
-        //太阳
-        // sun();
-
         //木星
         mu();
 
@@ -180,15 +185,37 @@ let globeObj = (function() {
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(winWth, winHgt);
         container.appendChild(renderer.domElement);
+        renderer.autoClear = false;
 
         let renderModel = new THREE.RenderPass( scene, camera );//渲染场景的通道，不会将结果输出到屏幕
-        let effectBloom = new THREE.BloomPass( 1.25 );//增加场景的渲染亮度
-        let effectFilm = new THREE.FilmPass( 0.35, 0.95, 2048, false );//将渲染结果输出到屏幕上
+        let effectBloom = new THREE.BloomPass( 1 );//增加场景的渲染亮度
+        let effectFilm = new THREE.FilmPass( 0.1, 1, 2048, false );//将渲染结果输出到屏幕上
         effectFilm.renderToScreen = true;
         composer = new THREE.EffectComposer( renderer );//渲染效果组合器
         composer.addPass( renderModel );
         composer.addPass( effectBloom );
         composer.addPass( effectFilm );
+
+        //菜单栏元素
+        let guiFields = {
+            "扫描线数量": 256,
+            "灰度图像": false,
+            "扫描线强度": 0.3,
+            "粗糙程度": 0.8,
+            "updateEffectFilm": function () {
+                effectFilm.uniforms.grayscale.value = guiFields.灰度图像;
+                effectFilm.uniforms.nIntensity.value = guiFields.粗糙程度;
+                effectFilm.uniforms.sIntensity.value = guiFields.扫描线强度;
+                effectFilm.uniforms.sCount.value = guiFields.扫描线数量;
+            }
+        };
+
+        //新建一个菜单栏
+        let gui = new dat.GUI();
+        gui.add(guiFields, "扫描线数量", 0, 5000).onChange(guiFields.updateEffectFilm);
+        gui.add(guiFields, "扫描线强度", 0, 10).onChange(guiFields.updateEffectFilm);
+        gui.add(guiFields, "粗糙程度", 0, 3).onChange(guiFields.updateEffectFilm);
+        gui.add(guiFields, "灰度图像").onChange(guiFields.updateEffectFilm);
 
         // resize事件
         window.addEventListener('resize', onWindowResize, false);
@@ -205,10 +232,13 @@ let globeObj = (function() {
 
     // 渲染
     function render() {
-        uniforms.time.value += 0.08;
+        let delta = 5 * clock.getDelta();
+        uniforms.time.value += 0.2 * delta;
         
         groupEarth.rotation.y -= 0.004;
         globeMesh.rotation.y += 0.01;
+
+        mesh.rotation.y += 0.01;
        
         groupMu.rotation.y -= 0.01;
         muMesh.rotation.y += 0.04;
@@ -217,10 +247,8 @@ let globeObj = (function() {
         moonMesh.position.z = 800 + 200*(Math.sin(speed));
         moonMesh.rotation.y += 0.05;
         speed -= 0.04;
-
+        renderer.clear();
         composer.render( 0.005 );
-
-        renderer.render(scene, camera);
     }
 
     // 动画
