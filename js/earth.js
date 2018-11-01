@@ -36,7 +36,7 @@ let globeObj = (function() {
          //是否自动旋转 
          controls.autoRotate = true; 
          //设置相机距离原点的最远距离 
-         controls.minDistance = 3; 
+         controls.minDistance = 5; 
          //设置相机距离原点的最远距离 
          controls.maxDistance = 2000; 
          //是否开启右键拖拽 
@@ -95,11 +95,11 @@ let globeObj = (function() {
 
     // 光
     function lights() {
-        let hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x333333, 2);
-        hemisphereLight.position.x = 0;
-        hemisphereLight.position.y = 0;
-        hemisphereLight.position.z = 0;
-        scene.add(hemisphereLight);
+        // let hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x333333, 2);
+        // hemisphereLight.position.x = 0;
+        // hemisphereLight.position.y = 0;
+        // hemisphereLight.position.z = 0;
+        // scene.add(hemisphereLight);
 
         light = new THREE.PointLight(0xffffff, 3, 10000);
         light.position.set(0, 0, 0);
@@ -198,10 +198,10 @@ let globeObj = (function() {
 
         //菜单栏元素
         let guiFields = {
-            "扫描线数量": 2000,
+            "扫描线数量": 256,
             "灰度图像": false,
             "扫描线强度": 0.3,
-            "粗糙程度": 0.2,
+            "粗糙程度": 0.8,
             "updateEffectFilm": function () {
                 effectFilm.uniforms.grayscale.value = guiFields.灰度图像;
                 effectFilm.uniforms.nIntensity.value = guiFields.粗糙程度;
