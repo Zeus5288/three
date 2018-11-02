@@ -235,7 +235,7 @@ let globeObj = (function() {
         let delta = 5 * clock.getDelta();
         uniforms.time.value += 0.2 * delta;
         
-        groupEarth.rotation.y -= 0.008;
+        groupEarth.rotation.y -= 0.02;
         globeMesh.rotation.y += 0.01;
 
         mesh.rotation.y += 0.002;
