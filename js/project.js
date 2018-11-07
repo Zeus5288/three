@@ -14,7 +14,7 @@ function main() {
     scene = new THREE.Scene();
 
     camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000);
-    camera.position.set(-10, 15, 25);
+    camera.position.set(-10, 15, 35);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     renderer = new THREE.WebGLRenderer({antialias:true});
@@ -47,7 +47,7 @@ function main() {
     //在当前场景和摄像机的基础上渲染一个新场景
     let renderPass = new THREE.RenderPass(scene, camera);
     //通过扫描线和失真来实现模拟电视屏幕的效果
-    let effectFilm = new THREE.FilmPass(0.8, 0.325, 256, false);
+    let effectFilm = new THREE.FilmPass(0.03, 0.03, 3000, false);
     //将渲染结果输出到屏幕
     effectFilm.renderToScreen = true;
 
@@ -58,25 +58,12 @@ function main() {
         
     //菜单栏元素
     let guiFields = {
-        "扫描线数量": 256,
-        "灰度图像": false,
-        "扫描线强度": 0.3,
-        "粗糙程度": 0.8,
-        "updateEffectFilm": function () {
-            effectFilm.uniforms.grayscale.value = guiFields.灰度图像;
-            effectFilm.uniforms.nIntensity.value = guiFields.粗糙程度;
-            effectFilm.uniforms.sIntensity.value = guiFields.扫描线强度;
-            effectFilm.uniforms.sCount.value = guiFields.扫描线数量;
-        }
+       
     };
 
     //新建一个菜单栏
     let gui = new dat.GUI();
-    gui.add(guiFields, "扫描线数量", 0, 2048).onChange(guiFields.updateEffectFilm);
-    gui.add(guiFields, "扫描线强度", 0, 1).onChange(guiFields.updateEffectFilm);
-    gui.add(guiFields, "粗糙程度", 0, 3).onChange(guiFields.updateEffectFilm);
-    gui.add(guiFields, "灰度图像").onChange(guiFields.updateEffectFilm);
-
+   
     stats = initStats();
 }
 
