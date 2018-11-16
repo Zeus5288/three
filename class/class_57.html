@@ -210,6 +210,8 @@
 
     function createParticles(size, transparent, opacity, vertexColors, sizeAttenuation, color) {
 
+        var texture = new THREE.TextureLoader().load("../images/textures/earth.jpg");
+
         //存放粒子数据的网格
 
         var geom = new THREE.Geometry();
@@ -242,9 +244,13 @@
 
             var particle = new THREE.Vector3(Math.random() * range - range / 2, Math.random() * range - range / 2, Math.random() * range - range / 2);
 
+            particle.velocityY = 0.1 + Math.random() / 5;
+
+            particle.velocityX = (Math.random() - 0.5) / 3;
+
             geom.vertices.push(particle);
 
-            var color = new THREE.Color(+randomColor());
+            var color = new THREE.Color(0xffffff);
 
             //.setHSL ( h, s, l ) h — 色调值在0.0和1.0之间 s — 饱和值在0.0和1.0之间 l — 亮度值在0.0和1.0之间。 使用HSL设置颜色。
 
@@ -265,6 +271,24 @@
     }
 
     function render() {
+
+        //产生雨滴的效果
+        var vertices = cloud.geometry.vertices;
+
+        vertices.forEach(function (v) {
+
+            v.y = v.y - (v.velocityY) * 3;
+
+            v.x = v.x - (v.velocityX) * .5;
+
+            if (v.y <= -60) v.y = 60;
+
+            if (v.x <= -20 || v.x >= 20) v.velocityX = v.velocityX * -1;
+
+        });
+
+        //设置实时更新网格的顶点信息
+        cloud.geometry.verticesNeedUpdate = true;
 
         renderer.render(scene, camera);
 
