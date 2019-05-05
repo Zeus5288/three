@@ -1,2 +1,2 @@
 # three
-webGL项目
+three.js练习
